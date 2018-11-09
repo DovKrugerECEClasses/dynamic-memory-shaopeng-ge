@@ -5,7 +5,7 @@ private:
 	uint32_t rgba;
 public:
 	Color(uint8_t r, uint8_t g, uint8_t b, uint8_t alpha = 1) {
-		rgba = ((r & 0xff) << 24) + ((g & 0xff) << 16) + ((b & 0xff) << 8) + (alpha & 0xff);
+		rgba = (r << 24) + (g << 16) + (b << 8) + (alpha);
 	}
 
 	char getColor()  {
