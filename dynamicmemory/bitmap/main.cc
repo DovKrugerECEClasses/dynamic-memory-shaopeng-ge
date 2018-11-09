@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>
 #include "Color.hh"
 using namespace std;
 
