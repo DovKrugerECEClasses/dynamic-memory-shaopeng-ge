@@ -44,7 +44,7 @@ public:
         GrowArray copy(orig);
         used = orig.used;
         capacity = orig.capacity;
-        swap(data,orig.data);
+        swap(data,copy.data);
         return *this;
     }
 
@@ -68,7 +68,7 @@ public:
         return data[i];
     }
 
-    friend std::ostream& operator <<(std::ostream& s, const GrowArray<T>& list) {
+    friend ostream& operator <<(ostream& s, const GrowArray<T>& list) {
         for (int i = 0; i < list.used; i++)
             s << list[i] << ' ';
         return s;
@@ -82,7 +82,7 @@ private:
     string name;
 public:
     Elephant(const string& name) : name(name) {}
-    Elephant() : name() {}
+    Elephant()  {}
     friend ostream& operator <<(ostream& s, const Elephant& e) {
         return s << e.name;
     }
@@ -97,11 +97,20 @@ int main() {
     for (int i = 0; i < 10; i++)
         b.addEnd(i);
     a.removeEnd();
-    cout << a;
-    cout << b;
+    cout<< a[1] << endl;
+    a[1] = 100;
+    cout<< a[1] << endl;
+    cout << a << endl;
+    cout << b << endl;
+
+    GrowArray<int> c(a);
+    cout << c << endl;
+
+    c = b;
+    cout << c << endl;
 
     GrowArray<Elephant> e;
     e.addEnd(Elephant("Alice"));
     e.addEnd(Elephant("Betty"));
-    cout << e << '\n';
+    cout << e;
 }
