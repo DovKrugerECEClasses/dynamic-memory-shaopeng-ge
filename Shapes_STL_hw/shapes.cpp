@@ -4,9 +4,37 @@
 #include <string>
 #include <vector>
 using namespace std;
-
 const double PI = 3.14159265359;
 
+class Shape{
+public:
+    virtual void write(const string& name) = 0;
+};
+
+class Design{
+private:
+    vector<Shape*> shapes;
+public:
+    static bool at_end;
+    static int counter;
+    Design():shapes({}){}
+    void add(Shape &s){
+        shapes.push_back(&s);
+        counter++;
+    }
+
+    void write(const string& name){
+        for (int i = 0; i < counter; ++i) {
+            if (i == counter-1){
+                at_end = true;
+            }
+            shapes[i]->write(name);
+        }
+    }
+};
+
+int Design::counter =0;
+bool Design::at_end = false;
 
 class Vertex{
 public:
@@ -36,7 +64,9 @@ facetNormal getNormal(const Vertex a,const Vertex b,const Vertex c){
     return facetNormal(x,y,z);
 }
 
-class Cube{
+
+
+class Cube:public Shape{
 public:
     double s,x,y,z;
 public:
@@ -53,8 +83,11 @@ public:
     }
 
     void write(const string& name){
-        ofstream wr(name);
-        wr << "solid " << name << "\n";
+        ofstream wr;
+        wr.open(name,ios::app);
+        if (Design::counter==1){
+            wr << "solid " << name << "\n";
+        }
 
         Vertex a(0,0,0);
         Vertex b(s,0,0);
@@ -65,190 +98,6 @@ public:
         Vertex g(s,s,s);
         Vertex h(0,s,s);
 
-           //bottom side
-        wr << "  facet normal" << "0 0 -1\n"
-           << "    outer loop\n"
-           << "      vertex " << a
-           << "      vertex " << d
-           << "      vertex " << b
-           << "    endloop\n"
-           << "  endfacet\n"
-
-           << "  facet normal" << "0 0 -1\n"
-           << "    outer loop\n"
-           << "      vertex " << b
-           << "      vertex " << d
-           << "      vertex " << c
-           << "    endloop\n"
-           << "  endfacet\n"
-           //back side
-           << "  facet normal" << "-1 0 0\n"
-           << "    outer loop\n"
-           << "      vertex " << a
-           << "      vertex " << e
-           << "      vertex " << d
-           << "    endloop\n"
-           << "  endfacet\n"
-
-           << "  facet normal" << "-1 0 0\n"
-           << "    outer loop\n"
-           << "      vertex " << d
-           << "      vertex " << e
-           << "      vertex " << h
-           << "    endloop\n"
-           << "  endfacet\n"
-           //left side
-           << "  facet normal" << "0 -1 0\n"
-           << "    outer loop\n"
-           << "      vertex " << b
-           << "      vertex " << f
-           << "      vertex " << e
-           << "    endloop\n"
-           << "  endfacet\n"
-
-           << "  facet normal" << "0 -1 0\n"
-           << "    outer loop\n"
-           << "      vertex " << b
-           << "      vertex " << e
-           << "      vertex " << a
-           << "    endloop\n"
-           << "  endfacet\n"
-           //right side
-           << "  facet normal" << "0 1 0\n"
-           << "    outer loop\n"
-           << "      vertex " << d
-           << "      vertex " << h
-           << "      vertex " << g
-           << "    endloop\n"
-           << "  endfacet\n"
-
-           << "  facet normal" << "0 1 0\n"
-           << "    outer loop\n"
-           << "      vertex " << d
-           << "      vertex " << g
-           << "      vertex " << c
-           << "    endloop\n"
-           << "  endfacet\n"
-           //front side
-           << "  facet normal" << "1 0 0\n"
-           << "    outer loop\n"
-           << "      vertex " << b
-           << "      vertex " << g
-           << "      vertex " << f
-           << "    endloop\n"
-           << "  endfacet\n"
-
-           << "  facet normal" << "1 0 0\n"
-           << "    outer loop\n"
-           << "      vertex " << c
-           << "      vertex " << g
-           << "      vertex " << b
-           << "    endloop\n"
-           << "  endfacet\n"
-           //up side
-           << "  facet normal" << "0 0 1\n"
-           << "    outer loop\n"
-           << "      vertex " << f
-           << "      vertex " << g
-           << "      vertex " << e
-           << "    endloop\n"
-           << "  endfacet\n"
-
-           << "  facet normal" << "0 0 1\n"
-           << "    outer loop\n"
-           << "      vertex " << h
-           << "      vertex " << e
-           << "      vertex " << g
-           << "    endloop\n"
-           << "  endfacet\n"
-
-
-           <<"endsolid " << name << "\n";
-    }
-
-
-};
-
-class Cylinder{
-public:
-    double r,h;
-    int fn;
-public:
-    Cylinder(double r, double h):r(r),h(h),fn(50){}
-    void write(const string& name){
-        ofstream f(name);
-        f << "solid " << name << "\n";
-        for (double i = 0; i < 2*PI; i += PI*2/fn) {
-            Vertex a(r*cos(i),r*sin(i),0);
-            Vertex b(r*cos(i+PI*2/fn),r*sin(i+PI*2/fn),0);
-            Vertex c(r*cos(i),r*sin(i),h);
-            Vertex d(r*cos(i+PI*2/fn),r*sin(i+PI*2/fn),h);
-            Vertex o1(0,0,0);
-            Vertex o2(0,0,h);
-
-            facetNormal n = getNormal(a,b,c);
-            facetNormal up (0,0,-1);
-            facetNormal down (0,0,1);
-
-            f << "  facet normal " << n
-              << "    outer loop\n"
-              << "      vertex " << a
-              << "      vertex " << b
-              << "      vertex " << c
-              << "    endloop\n"
-              << "  endfacet\n"
-
-              << "  facet normal " << n
-              << "    outer loop\n"
-              << "      vertex " << b
-              << "      vertex " << d
-              << "      vertex " << c
-              << "    endloop\n"
-              << "  endfacet\n"
-
-              << "  facet normal " << down
-              << "    outer loop\n"
-              << "      vertex " << a
-              << "      vertex " << o1
-              << "      vertex " << b
-              << "    endloop\n"
-              << "  endfacet\n"
-
-              << "  facet normal " << up
-              << "    outer loop\n"
-              << "      vertex " << c
-              << "      vertex " << d
-              << "      vertex " << o2
-              << "    endloop\n"
-              << "  endfacet\n";
-        }
-        f <<"endsolid " << name << "\n";
-    }
-};
-
-class Design{
-private:
-   Cube c1;
-   Cylinder c2;
-public:
-    Design():c1(Cube(0)),c2(Cylinder(0,0)){}
-    void add(Cube c){
-        c1 = c;
-    }
-    void add(Cylinder cyl){
-        c2 = cyl;
-    }
-    void write(const string& name){
-        ofstream wr(name);
-        wr << "solid " << name << "\n";
-        Vertex a(0,0,0);
-        Vertex b(c1.s,0,0);
-        Vertex c(c1.s,c1.s,0);
-        Vertex d(0,c1.s,0);
-        Vertex e(0,0,c1.s);
-        Vertex f(c1.s,0,c1.s);
-        Vertex g(c1.s,c1.s,c1.s);
-        Vertex h(0,c1.s,c1.s);
         //bottom side
         wr << "  facet normal" << "0 0 -1\n"
            << "    outer loop\n"
@@ -345,20 +194,39 @@ public:
            << "      vertex " << g
            << "    endloop\n"
            << "  endfacet\n";
+        if (Design::at_end){
+            wr <<"endsolid " << name << "\n";
+        }
+    }
+};
 
-        for (double i = 0; i < 2*PI; i += PI*2/c2.fn) {
-            Vertex a(c2.r*cos(i),c2.r*sin(i),0);
-            Vertex b(c2.r*cos(i+PI*2/c2.fn),c2.r*sin(i+PI*2/c2.fn),0);
-            Vertex c(c2.r*cos(i),c2.r*sin(i),c2.h);
-            Vertex d(c2.r*cos(i+PI*2/c2.fn),c2.r*sin(i+PI*2/c2.fn),c2.h);
+class Cylinder: public Shape{
+public:
+    double r,h;
+    int fn;
+public:
+    Cylinder(double r, double h):r(r),h(h),fn(50){}
+    void write(const string& name){
+        ofstream f;
+        f.open(name,ios::app);
+
+        if (Design::counter==1){
+            f << "solid " << name << "\n";
+        }
+
+        for (double i = 0; i < 2*PI; i += PI*2/fn) {
+            Vertex a(r*cos(i),r*sin(i),0);
+            Vertex b(r*cos(i+PI*2/fn),r*sin(i+PI*2/fn),0);
+            Vertex c(r*cos(i),r*sin(i),h);
+            Vertex d(r*cos(i+PI*2/fn),r*sin(i+PI*2/fn),h);
             Vertex o1(0,0,0);
-            Vertex o2(0,0,c2.h);
+            Vertex o2(0,0,h);
 
             facetNormal n = getNormal(a,b,c);
             facetNormal up (0,0,-1);
             facetNormal down (0,0,1);
 
-            wr << "  facet normal " << n
+            f << "  facet normal " << n
               << "    outer loop\n"
               << "      vertex " << a
               << "      vertex " << b
@@ -390,10 +258,12 @@ public:
               << "    endloop\n"
               << "  endfacet\n";
         }
-        wr <<"endsolid " << name << "\n";
+        if (Design::at_end){
+            f <<"endsolid " << name << "\n";
+        }
     }
-
 };
+
 
 
 
