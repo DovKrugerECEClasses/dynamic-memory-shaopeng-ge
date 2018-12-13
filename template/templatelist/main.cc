@@ -10,8 +10,7 @@ private:
     T* data;
     void checkGrow() {
         if (capacity == 0){
-            capacity++;
-            data = new T[1];
+            data = new T[++capacity];
             return;
         }
 
@@ -50,8 +49,7 @@ public:
 
     void addEnd(const T& v) {
         checkGrow();
-        data[used] = v;
-        used++;
+        data[used++] = v;
     }
 
     T removeEnd() {
