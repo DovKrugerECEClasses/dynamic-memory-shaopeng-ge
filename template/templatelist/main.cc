@@ -55,10 +55,8 @@ public:
     }
 
     T removeEnd() {
-        used--;
+        return data[--used];
     }
-
-
 
     T operator [](int i) const {
         return data[i];
@@ -96,21 +94,29 @@ int main() {
         a.addEnd(i);
     for (int i = 0; i < 10; i++)
         b.addEnd(i);
-    a.removeEnd();
-    cout<< a[1] << endl;
+    cout << "a:"<<a<<endl;
+    cout << "b:"<<b<<endl;
+    
+    cout<< "remove the last item of a : " << a.removeEnd() << endl;
+    
+    cout<< "a[1]: " << a[1] << endl;
     a[1] = 100;
-    cout<< a[1] << endl;
-    cout << a << endl;
-    cout << b << endl;
+    cout<< "after change ele a[1] to 100"<< endl;
+    cout<< "a[1]: "<<a[1] << endl;
+    
+    cout << "a:"<<a<<endl;
+    cout << "b:"<<b<<endl;
 
     GrowArray<int> c(a);
-    cout << c << endl;
+    cout <<"a copy of a: " << c << endl;
 
     c = b;
-    cout << c << endl;
+    cout <<" after assigning b to c, c is :"<< c << endl;
 
     GrowArray<Elephant> e;
     e.addEnd(Elephant("Alice"));
     e.addEnd(Elephant("Betty"));
-    cout << e;
+    cout << "e: "<<e << endl;
+    cout<<  "remove " << e.removeEnd() << endl;
+    cout << "after remove remove, e is: "<<e << endl;
 }

@@ -1,4 +1,3 @@
-solid Cyl.stl
   facet normal 25.0666 1.57706 -0
     outer loop
       vertex 10 0 0
@@ -1427,4 +1426,3 @@ solid Cyl.stl
       vertex 0 0 20
     endloop
   endfacet
-endsolid Cyl.stl
